@@ -84,6 +84,7 @@ type Ivers struct {
 		} `json:"params"`
 	} `json:"result"`
 }
+
 type Str struct {
 	Firm  string
 	Price float32
@@ -100,12 +101,12 @@ var Rez struct {
 	Viev  []Str2
 }
 
-/*
-type Result struct {
-	Price float32
+type Rezult struct {
 	Firm  string
+	Price map[string]float32
 }
 
+/*
 type Orders struct {
 	Number      string `json:"Number"`
 	Datatime    string `json:"Datatime"`

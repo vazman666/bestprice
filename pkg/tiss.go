@@ -8,12 +8,9 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	//"reflect"
-	//"io"
-	//"os"
 )
 
-func Tiss(article string) (map[string]float32, error) {
+func Tiss(article string, channel chan models.Rezult) { // (map[string]float32, error) {
 	fmt.Printf("Запрос к Tiss на %v\n", article)
 	brands := brand(article)
 	var targets models.Tiss
@@ -35,11 +32,13 @@ func Tiss(article string) (map[string]float32, error) {
 		bytesRepresentation, err := json.Marshal(message)
 		//fmt.Printf("%s\n", bytesRepresentation)
 		if err != nil {
-			return nil, fmt.Errorf("Ошибка Masrshal %v", err)
+			log.Fatal(err)
+			//return nil, fmt.Errorf("Ошибка Masrshal %v", err)
 		}
 		u, err := url.Parse("http://api.tmparts.ru/api/StockByArticleList")
 		if err != nil {
-			return nil, fmt.Errorf("Ошибка url.Parse %v", err)
+			log.Fatal(err)
+			//return nil, fmt.Errorf("Ошибка url.Parse %v", err)
 		}
 		q := u.Query()
 		q.Set("JSONparameter", string(bytesRepresentation))
@@ -51,7 +50,8 @@ func Tiss(article string) (map[string]float32, error) {
 		r.Header.Add("Authorization", "Bearer loAM8nyBc_inqml98_6VuaPLkWZUPsIxclJTBN1xmszVKnCOd-NqNL7-aoyEuziA-kiJCR5r0sx8soB1Z4vhIg0LiUq_BgkI2eUK3cB1LMGVK1fvlN0wkdH5AaQA7UivDYBU7cYU_4iJe_sqWAeDuADw42nnVXLDgYuP__zk2uchwxj5qk7luo8Az2scKRV9F2sLRFmuYq9wFWSF0IQWaG2zeKnz2XbtbtAJ-P5mb0-Sqze4OyfGg7OwSpJbfXtO3BKH1HRfkxpeh5_jTCswkhJwogKaReXjjXqjb6CyRcY42yyzkZniCeY7Pm4u2djmETJQKaHVk7DPWDCquoMpmOiKvFt2z4WjQ5sCOTeqZYjgYKmMmACn504eLCIZKVO4xWtxsXDR03-e8UqWjBaiU4jq4W-GbdZ_AZPtxT4RkRKA4C0V86FBP1ACm734Rg8gS923_PSQf-CQsbchylr0X-3ZQdpQxdb20KGVTzE_8Hj8Y8UWXxyuqqmgObPGxRaA") // добавляем заголовок Accept
 		resp, err := client.Do(r)
 		if err != nil {
-			return nil, fmt.Errorf("Ошибка client.DO %v", err)
+			log.Fatal(err)
+			//return nil, fmt.Errorf("Ошибка client.DO %v", err)
 		}
 		defer resp.Body.Close()
 		//io.Copy(os.Stdout, resp.Body)
@@ -62,7 +62,8 @@ func Tiss(article string) (map[string]float32, error) {
 		//fmt.Printf("body=%v\n",string(body))
 		err = json.Unmarshal(body, &targets)
 		if err != nil {
-			return nil, fmt.Errorf("Ошибка Unmarshal %v", err)
+			log.Fatal(err)
+			//return nil, fmt.Errorf("Ошибка Unmarshal %v", err)
 		}
 
 		//fmt.Printf("%v\v", targets)
@@ -86,15 +87,17 @@ func Tiss(article string) (map[string]float32, error) {
 	//fmt.Printf("rez = %v\n", rez)
 	if len(rez) == 0 {
 		rez["нет ничего"] = 100500
-		return rez, nil
+		//return rez, nil
 	}
+	rezult := models.Rezult{Firm: "Tiss", Price: rez}
+	channel <- rezult
 	/*min := rez[0]
 	for _, i := range rez {
 		if min.Price > i.Price {
 			min = i
 		}
 	}*/
-	return rez, nil
+	return //rez, nil
 }
 func brand(article string) []string {
 	type Brand_Article_List struct {

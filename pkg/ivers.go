@@ -13,16 +13,18 @@ import (
 	//"os"
 )
 
-func Ivers(article string) (map[string]float32, error) {
+func Ivers(article string, channel chan models.Rezult) { //} (map[string]float32, error) {
 	fmt.Printf("Запрос к Ivers на %v\n", article)
 	cookie, err := Login()
 
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
+		//return nil, err
 	}
 	u, err := url.Parse("https://order.ivers.ru/api/v1/product/search")
 	if err != nil {
-		return nil, fmt.Errorf("Ошибка url.Parse %v", err)
+		log.Fatal(err)
+		//return nil, fmt.Errorf("Ошибка url.Parse %v", err)
 	}
 	q := u.Query()
 
@@ -40,7 +42,8 @@ func Ivers(article string) (map[string]float32, error) {
 	r.Header.Add("Cookie", cookie)
 	resp, err := client.Do(r)
 	if err != nil {
-		return nil, fmt.Errorf("Ошибка client.DO %v", err)
+		log.Fatal(err)
+		//return nil, fmt.Errorf("Ошибка client.DO %v", err)
 	}
 	defer resp.Body.Close()
 	//io.Copy(os.Stdout, resp.Body)
@@ -51,15 +54,18 @@ func Ivers(article string) (map[string]float32, error) {
 	//fmt.Printf("body=%v\n",string(body))
 	err = json.Unmarshal(body, &targets)
 	if err != nil {
-		return nil, fmt.Errorf("Ошибка Unmarshal %v", err)
+		log.Fatal(err)
+		//return nil, fmt.Errorf("Ошибка Unmarshal %v", err)
 	}
 
 	//fmt.Printf("%v\v", targets)
 	if !targets.Success {
-		return nil, fmt.Errorf("Ошибка запроса к Иверс %v", err)
+		log.Fatal(err)
+		//return nil, fmt.Errorf("Ошибка запроса к Иверс %v", err)
 	}
 	if !targets.Result.Params.Success {
-		return nil, fmt.Errorf("Ошибка запроса к Иверс %v", err)
+		log.Fatal(err)
+		//return nil, fmt.Errorf("Ошибка запроса к Иверс %v", err)
 	}
 	rez := make(map[string]float32)
 	for _, i := range targets.Result.Params.Objects.Original {
@@ -96,7 +102,10 @@ func Ivers(article string) (map[string]float32, error) {
 		}
 	}*/
 	Logout(cookie)
-	return rez, nil
+	rezult := models.Rezult{Firm: "Ivers", Price: rez}
+
+	channel <- rezult
+	return //rez, nil
 }
 func Login() (string, error) {
 	u, err := url.Parse("https://order.ivers.ru/api/v1/login")
@@ -169,5 +178,6 @@ func Logout(token string) error {
 		fmt.Printf("Ошибка выхода \n")
 		return fmt.Errorf("Ошибка выхода")
 	}
+
 	return nil
 }

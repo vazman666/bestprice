@@ -23,7 +23,7 @@ func home_page(w http.ResponseWriter, r *http.Request) {
 		}
 		article = r.FormValue("model")
 		fmt.Printf("Article =%v\n", article)
-		tmp, err := pkg.Tiss(article)
+		//tmp, err := pkg.Tiss(article)
 		pkg.Zapros(article)
 		/*for i, j := range tmp {
 			models.Rez[i] = append(models.Rez[i], models.Str{"Tiss", j})
@@ -34,7 +34,7 @@ func home_page(w http.ResponseWriter, r *http.Request) {
 			models.Rez[i] = append(models.Rez[i], models.Str{"Forum", j})
 			fmt.Printf("Rez=%v\n", models.Rez)
 		}*/
-		fmt.Printf("%v\n", tmp)
+		//fmt.Printf("%v\n", tmp)
 		//fmt.Printf("%v\n", model)
 		http.Redirect(w, r, "/", 301)
 	} else {

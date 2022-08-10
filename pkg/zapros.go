@@ -8,18 +8,24 @@ import (
 func Zapros(article string) {
 	models.Rez.Firms = nil
 	models.Rez.Firms = make(map[string][]models.Str)
-
+	myChan := make(chan models.Rezult)
+	var rezult models.Rezult
 	//fmt.Printf("Запрос на артикул %v\n", article)
-	tiss, err := Tiss(article)
-	if err != nil {
-		fmt.Printf("error %v", err)
+	go Tiss(article, myChan)
+	go Froza(article, myChan)
+	go Mikado(article, myChan)
+	go Ivers(article, myChan)
+	go Forum(article, myChan)
+	for i := 0; i < 5; i++ {
+		rezult = <-myChan
+
+		//fmt.Printf("Tiss: \n")
+		for key, value := range rezult.Price {
+			models.Rez.Firms[key] = append(models.Rez.Firms[key], models.Str{rezult.Firm, value})
+			fmt.Printf("%v   %-16s  \t%v\n", rezult.Firm, key, value)
+		}
 	}
-	//fmt.Printf("Tiss: \n")
-	for key, value := range tiss {
-		models.Rez.Firms[key] = append(models.Rez.Firms[key], models.Str{"Tiss", value})
-		//fmt.Printf("   %-16s  \t%v\n", key, value)
-	}
-	froza, err := Froza(article)
+	/*froza, err := Froza(article)
 	if err != nil {
 		fmt.Printf("error %v", err)
 	}
@@ -54,7 +60,7 @@ func Zapros(article string) {
 	for key, value := range forum {
 		models.Rez.Firms[key] = append(models.Rez.Firms[key], models.Str{"Forum", value})
 		//fmt.Printf("   %-16s  \t%v\n", key, value)
-	}
+	}*/
 	//models.Rez.Keys = nil
 	//models.Rez.Keys = make([]string)
 	models.Rez.Viev = nil
