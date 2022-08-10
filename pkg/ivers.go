@@ -14,6 +14,7 @@ import (
 )
 
 func Ivers(article string) (map[string]float32, error) {
+	fmt.Printf("Запрос к Ivers на %v\n", article)
 	cookie, err := Login()
 
 	if err != nil {

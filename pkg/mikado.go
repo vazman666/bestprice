@@ -12,6 +12,7 @@ import (
 )
 
 func Mikado(article string) (map[string]float32, error) {
+	fmt.Printf("Запрос к Mikado на %v\n", article)
 	article = strings.ToLower(article)
 	u, err := url.Parse("http://www.mikado-parts.ru/ws1/service.asmx/Code_Search")
 	//u, err := url.Parse("http://localhost:8080")

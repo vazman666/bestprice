@@ -14,6 +14,7 @@ import (
 )
 
 func Tiss(article string) (map[string]float32, error) {
+	fmt.Printf("Запрос к Tiss на %v\n", article)
 	brands := brand(article)
 	var targets models.Tiss
 	rez := make(map[string]float32)

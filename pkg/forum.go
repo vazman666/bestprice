@@ -10,6 +10,7 @@ import (
 )
 
 func Forum(article string) (map[string]float32, error) {
+	fmt.Printf("Запрос к Forum на %v\n", article)
 	u, err := url.Parse("https://api.forum-auto.ru/v2/listGoods")
 	//u, err := url.Parse("http://localhost:8080")
 	if err != nil {

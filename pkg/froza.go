@@ -11,6 +11,7 @@ import (
 )
 
 func Froza(article string) (map[string]float32, error) {
+	fmt.Printf("Запрос к Froza на %v\n", article)
 	u, err := url.Parse("https://www.froza.ru/index.php/search/original.json")
 	//u, err := url.Parse("http://localhost:8080")
 	if err != nil {

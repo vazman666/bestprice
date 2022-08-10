@@ -2,6 +2,7 @@ package main
 
 import (
 	"bestprice/models"
+	"bestprice/pkg"
 	"fmt"
 	"html/template"
 	"log"
@@ -22,8 +23,9 @@ func home_page(w http.ResponseWriter, r *http.Request) {
 		}
 		article = r.FormValue("model")
 		fmt.Printf("Article =%v\n", article)
-		/*tmp, err := pkg.Tiss(article)
-		for i, j := range tmp {
+		tmp, err := pkg.Tiss(article)
+		pkg.Zapros(article)
+		/*for i, j := range tmp {
 			models.Rez[i] = append(models.Rez[i], models.Str{"Tiss", j})
 			fmt.Printf("Rez=%v\n", models.Rez)
 		}
@@ -31,14 +33,14 @@ func home_page(w http.ResponseWriter, r *http.Request) {
 		for i, j := range tmp {
 			models.Rez[i] = append(models.Rez[i], models.Str{"Forum", j})
 			fmt.Printf("Rez=%v\n", models.Rez)
-		}
-		fmt.Printf("%v\n", tmp)*/
+		}*/
+		fmt.Printf("%v\n", tmp)
 		//fmt.Printf("%v\n", model)
 		http.Redirect(w, r, "/", 301)
 	} else {
 
 		tmpl, _ := template.ParseFiles("templates/homepage.html")
-		fmt.Printf("Rez=%v\n", models.Rez)
+		//fmt.Printf("Rez=%v\n", models.Rez)
 		tmpl.Execute(w, models.Rez)
 	}
 	//fmt.Fprint(w, "Go is super")
